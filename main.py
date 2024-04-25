@@ -1,13 +1,17 @@
 import pygame
 import pymunk.pygame_util
 import random
-
+import pytest
 
 # Import file with the constants we need.
 import constants
 
 
 pymunk.pygame_util.positive_y_is_up = False
+
+
+def test_placeholder():
+    pass
 
 
 def create_square_at_pos(space: pymunk.Space, pos: tuple, elasticity: float = 0.8, friction: float  = 1.0) -> None:
