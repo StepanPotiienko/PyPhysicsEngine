@@ -1,7 +1,7 @@
 import pygame
 import pymunk.pygame_util
 import random
-import pytest
+
 
 # Import file with the constants we need.
 import constants
@@ -10,35 +10,59 @@ import constants
 pymunk.pygame_util.positive_y_is_up = False
 
 
-def test_placeholder():
-    pass
+class Square():
+    timeAlive = 0.0
+    isOnTheScene = False
 
 
-def create_square_at_pos(space: pymunk.Space, pos: tuple, elasticity: float = 0.8, friction: float  = 1.0) -> None:
-    """
+    def __init__(self):
+        self.render_time()
+
+
+    def time(self):
+        while self.isOnTheScene:
+            timeAlive += 1
+            time.sleep(1000)
+   
+            print(timeAlive)
+
+        return self.timeAlive
     
-    Creates a square at the position specified as a pos variable, changes its color to a random one,
-    and adds it to the PyMunk space.
 
-    space - PyMunk space.
-    pos - the position of a square.
-    elasticity - how does a square repel any changes to its form.
-    friction - how does a square does not like to move.
+    def render_time(self):
+        surface.blit(font.render(str(self.time()), False, (0, 255, 0)), (100, 100))
 
-    """
-    mass, size = 1, (60, 60)
-    moment = pymunk.moment_for_box(mass, size)
-    body = pymunk.Body(mass, moment)
+            
+    # TODO: Output square's velocity right next to it. For this I should come up with a way to calculate it using s=v0t+at^2/2.
+    def create_square_at_pos(self, space: pymunk.Space, pos: tuple, elasticity: float = 0.8, friction: float  = 1.0) -> None:
+        """
+        
+        Creates a square at the position specified as a pos variable, changes its color to a random one,
+        and adds it to the PyMunk space.
 
-    # Create a box at a mouse position.
-    body.position = pos
-    shape = pymunk.Poly.create_box(body, size)
-    shape.elasticity = elasticity
-    shape.friction = friction
+        space - PyMunk space.
+        pos - the position of a square.
+        elasticity - how does a square repel any changes to its form.
+        friction - how does a square does not like to move.
 
-    # Randomize the square's color.
-    shape.color = [random.randrange(256) for i in range(4)]
-    space.add(body, shape)
+        """
+        mass, size = 1, (60, 60)
+        moment = pymunk.moment_for_box(mass, size)
+        body = pymunk.Body(mass, moment)
+
+        # Create a box at a mouse position.
+        body.position = pos
+        shape = pymunk.Poly.create_box(body, size)
+        shape.elasticity = elasticity
+        shape.friction = friction
+
+        
+        square = Square()
+
+
+        # Randomize the square's color.
+        shape.color = [random.randrange(256) for i in range(4)]
+        space.add(body, shape)
 
 
 pygame.init()
@@ -49,7 +73,7 @@ surface = pygame.display.set_mode(constants.RES)
 
 
 clock = pygame.time.Clock()
-font = pygame.font.SysFont("Arial" , 18 , bold = True)
+font = pygame.font.SysFont("Fira Code" , 18 , bold = True)
 
 
 draw_options = pymunk.pygame_util.DrawOptions(surface)
@@ -80,7 +104,8 @@ while True:
         # If we press the left mouse button, then a square is spawned at this exact position.
         if i.type == pygame.MOUSEBUTTONDOWN:
             if i.button == 1:
-                create_square_at_pos(space, i.pos, random.randrange(0, 1), random.randrange(0, 1))
+                square = Square()
+                square.create_square_at_pos(space, i.pos, random.randrange(0, 1), random.randrange(0, 1))
                 
 
 
