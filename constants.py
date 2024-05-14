@@ -12,10 +12,13 @@ FPS -> how many times per second the window changes its properties.
 
 """
 
+is_paused = False
+
 g = scipy.constants.g
 G = scipy.constants.G
 
 
 RES = WIDTH, HEIGHT = 900, 720
 FPS = 60
+
 
