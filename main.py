@@ -10,86 +10,42 @@ import constants
 pymunk.pygame_util.positive_y_is_up = False
 
 
-class Circle():
-    radius: float = 1.0
+class Object:
+    object_type: str = 'circle'
+    mass: float = 1.0
 
 
-    def __init__(self, radius):
-        self.radius = radius
-    
+    def __init__(self, mass: float, object_type: str):
+        self.mass = mass
+        self.object_type = object_type
+
+
+    # TODO: Implement a system where user can choose which object to place.
     def create_at_pos(self, space: pymunk.Space, pos: tuple, elasticity: float = 0.8, friction: float = 1.0) -> None:
-        mass = 1
-        moment = pymunk.moment_for_circle(mass, self.radius, outer_radius=1)
-        body = pymunk.Body(mass, moment)
+        body = pymunk.Body(self.mass, 1)
 
-        # Create a box at a mouse position.
         body.position = pos
-        shape = pymunk.Circle(body, self.radius)
-
-        shape.elasticity = elasticity
-        shape.friction = friction
-
-        shape.color = [random.randrange(256) for i in range(4)] 
-        space.add(body, shape)
-
-
-class Square():
-    timeAlive = 0.0
-    isOnTheScene = False
-
-
-    def __init__(self):
-        self.render_time()
-
-
-    def time(self):
-        while self.isOnTheScene:
-            timeAlive += 1
-            time.sleep(1000)
-   
-            print(timeAlive)
-
-        return self.timeAlive
     
+        if self.object_type == 'circle':
+            shape = pymunk.Circle(body, 100)
 
-    def render_time(self):
-        surface.blit(font.render(str(self.time()), False, (0, 255, 0)), (100, 100))
-
-            
-    # TODO: Output square's velocity right next to it. For this I should come up with a way to calculate it using s=v0t+at^2/2.
-    def create_at_pos(self, space: pymunk.Space, pos: tuple, elasticity: float = 0.8, friction: float  = 1.0) -> None:
-        """
+        elif self.object_type == 'box':
+            shape = pymunk.Poly.create_box(body, (100, 100))
         
-        Creates a square at the position specified as a pos variable, changes its color to a random one,
-        and adds it to the PyMunk space.
+        elif self.object_type == 'triangle':
+            points = (0,0), (50,0), (25,50)
+            shape = pymunk.Poly(body, points)
 
-        space - PyMunk space.
-        pos - the position of a square.
-        elasticity - how does a square repel any changes to its form.
-        friction - how does a square does not like to move.
-
-        """
-        mass, size = 1, (60, 60)
-        moment = pymunk.moment_for_box(mass, size)
-        body = pymunk.Body(mass, moment)
-
-        # Create a box at a mouse position.
-        body.position = pos
-        shape = pymunk.Poly.create_box(body, size)
         shape.elasticity = elasticity
         shape.friction = friction
 
-        
-        square = Square()
-
-
-        # Randomize the square's color.
         shape.color = [random.randrange(256) for i in range(4)]
         space.add(body, shape)
 
 
 pygame.init()
 pygame.font.init()
+
 
 surface = pygame.display.set_mode(constants.RES)
 
@@ -117,7 +73,7 @@ def change_g(nv: float) -> None:
     constants.g += nv 
     space.gravity = 0, constants.g
 
-
+   
 # Drawing a game each frame
 while True:
     surface.fill(pygame.Color('black'))
@@ -140,7 +96,6 @@ while True:
                     if command == 'exit':
                         constants.is_paused = False
 
-
                 
             if event.key == pygame.K_p:
                 constants.is_paused = False 
@@ -152,8 +107,18 @@ while True:
                 # square = Square()
                 # square.create_at_pos(space, event.pos, random.randrange(0, 1), random.randrange(0, 1))
        
-                circle = Circle(radius=100.0)
-                circle.create_at_pos(space, event.pos, random.randrange(0, 1), random.randrange(0,1 ))
+                # circle = Circle(radius=100.0)
+                # circle.create_at_pos(space, event.pos, random.randrange(0, 1), random.randrange(0,1 ))
+                
+                # obj = Object(mass=15, object_type='circle')
+                # obj.create_at_pos(space, event.pos, 0.8, 0.5)
+
+                # obj_cube = Object(mass=15, object_type='box')
+                # obj_cube.create_at_pos(space, event.pos, 0.8, 0.5)
+                
+
+                obj = Object(mass=15, object_type='triangle')
+                obj.create_at_pos(space, event.pos, 0.8, 0.5)
 
         
         keys = pygame.key.get_pressed()        

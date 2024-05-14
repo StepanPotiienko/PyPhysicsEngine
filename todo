@@ -1,3 +1,8 @@
+TODO:
 * User should be able to choose between 'cube' and 'circle'.
-* Implement choosing a size system.
+* Implement choosing a size.
+* Fix the physics of triangle shape - it behaves weird on collisions.
 
+
+DONE:
+* Add another shape - triangle.
