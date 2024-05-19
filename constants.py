@@ -22,3 +22,5 @@ RES = WIDTH, HEIGHT = 900, 720
 FPS = 60
 
 
+bodies_index = {1: 'box', 2: 'circle', 3: 'triangle'}
+

@@ -22,26 +22,36 @@ class Object:
 
     # TODO: Implement a system where user can choose which object to place.
     def create_at_pos(self, space: pymunk.Space, pos: tuple, elasticity: float = 0.8, friction: float = 1.0) -> None:
-        body = pymunk.Body(self.mass, 1)
+        if self.object_type is not 'triangle':
 
-        body.position = pos
-    
-        if self.object_type == 'circle':
-            shape = pymunk.Circle(body, 100)
+            body = pymunk.Body(self.mass, 1)
 
-        elif self.object_type == 'box':
-            shape = pymunk.Poly.create_box(body, (100, 100))
+            body.position = pos
         
-        elif self.object_type == 'triangle':
+            if self.object_type == 'circle':
+                shape = pymunk.Circle(body, 100)
+
+            elif self.object_type == 'box':
+                shape = pymunk.Poly.create_box(body, (100, 100))
+        
+            shape.color = [random.randrange(256) for i in range(4)]
+            space.add(body, shape)
+       
+        else:
             points = (0,0), (50,0), (25,50)
-            shape = pymunk.Poly(body, points)
+            moment = pymunk.moment_for_poly(self.mass, points)
 
-        shape.elasticity = elasticity
-        shape.friction = friction
+            triangle_body = pymunk.Body(self.mass, moment)
+            triangle_body.position = pos
 
-        shape.color = [random.randrange(256) for i in range(4)]
-        space.add(body, shape)
+            shape = pymunk.Poly(triangle_body, points)
+            
+            shape.color = [random.randrange(256) for i in range(4)]
+            space.add(triangle_body, shape)
+            
 
+class UI:
+    pass
 
 pygame.init()
 pygame.font.init()
@@ -74,9 +84,13 @@ def change_g(nv: float) -> None:
     space.gravity = 0, constants.g
 
    
+body_id = 1   
 # Drawing a game each frame
 while True:
     surface.fill(pygame.Color('black'))
+   
+    game_gui = UI()
+
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -100,24 +114,23 @@ while True:
             if event.key == pygame.K_p:
                 constants.is_paused = False 
 
+            if event.key == pygame.K_c:
+                body_id += 1
 
-        # If we press the left mouse button, then a square is spawned at this exact position.
+                if body_id > len(constants.bodies_index):
+                    body_id = 1
+
+        """
+        
+        To implement choosing between different bodies I can use dictionaries.
+        For example, when I press 'C' key, the switch goes from 0 to 1, and 
+        '1' is the key in dictionary for 'cube' body.
+
+            
+        """
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                # square = Square()
-                # square.create_at_pos(space, event.pos, random.randrange(0, 1), random.randrange(0, 1))
-       
-                # circle = Circle(radius=100.0)
-                # circle.create_at_pos(space, event.pos, random.randrange(0, 1), random.randrange(0,1 ))
-                
-                # obj = Object(mass=15, object_type='circle')
-                # obj.create_at_pos(space, event.pos, 0.8, 0.5)
-
-                # obj_cube = Object(mass=15, object_type='box')
-                # obj_cube.create_at_pos(space, event.pos, 0.8, 0.5)
-                
-
-                obj = Object(mass=15, object_type='triangle')
+                obj = Object(mass=15, object_type=constants.bodies_index[body_id])
                 obj.create_at_pos(space, event.pos, 0.8, 0.5)
 
         
