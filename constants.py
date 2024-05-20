@@ -14,6 +14,7 @@ FPS -> how many times per second the window changes its properties.
 
 is_paused = False
 
+
 g = scipy.constants.g
 G = scipy.constants.G
 
@@ -23,4 +24,8 @@ FPS = 60
 
 
 bodies_index = {1: 'box', 2: 'circle', 3: 'triangle'}
+
+
+scalar_size: float = 1.0
+
 

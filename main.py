@@ -14,7 +14,6 @@ class Object:
     object_type: str = 'circle'
     mass: float = 1.0
 
-
     def __init__(self, mass: float, object_type: str):
         self.mass = mass
         self.object_type = object_type
@@ -29,10 +28,10 @@ class Object:
             body.position = pos
         
             if self.object_type == 'circle':
-                shape = pymunk.Circle(body, 100)
+                shape = pymunk.Circle(body, 100 * constants.scalar_size)
 
             elif self.object_type == 'box':
-                shape = pymunk.Poly.create_box(body, (100, 100))
+                shape = pymunk.Poly.create_box(body, (100 * constants.scalar_size, 100 * constants.scalar_size))
         
             shape.color = [random.randrange(256) for i in range(4)]
             space.add(body, shape)
@@ -52,6 +51,7 @@ class Object:
 
 class UI:
     pass
+
 
 pygame.init()
 pygame.font.init()
@@ -119,6 +119,12 @@ while True:
 
                 if body_id > len(constants.bodies_index):
                     body_id = 1
+
+            if event.key == pygame.K_v:
+                constants.scalar_size += 1
+
+                if constants.scalar_size > 3:
+                    constants.scalar_size = 1
 
         """
         
